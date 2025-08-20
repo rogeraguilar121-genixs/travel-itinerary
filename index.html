@@ -96,50 +96,27 @@
             color: white;
         }
         
-        .file-upload-area {
-            border: 2px dashed #d1d5db;
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            margin: 20px 0;
-            background: #f8f8f8;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .file-upload-area:hover {
-            border-color: #374151;
-            background: #f0f0f0;
-        }
-        
-        .file-upload-area.dragover {
-            border-color: #059669;
-            background: #ecfdf5;
-        }
-        
-        .upload-icon {
-            font-size: 48px;
-            color: #9ca3af;
-            margin-bottom: 16px;
-        }
-        
-        .upload-text {
-            color: #4b5563;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-        
-        .upload-subtext {
-            color: #9ca3af;
-            font-size: 14px;
-        }
-        
-        .file-input {
-            display: none;
-        }
-        
         .content {
             padding: 30px;
+        }
+        
+        .upload-instructions {
+            background: #e0f2fe;
+            border: 1px solid #0284c7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .upload-instructions h3 {
+            color: #0284c7;
+            margin-bottom: 10px;
+        }
+        
+        .upload-instructions p {
+            color: #374151;
+            line-height: 1.5;
         }
         
         .itinerary-template {
@@ -352,85 +329,6 @@
             font-size: 14px;
         }
         
-        .save-indicator {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #059669;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-        
-        .save-indicator.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .file-preview {
-            background: #f8f8f8;
-            border: 1px solid #e8e5e0;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-        
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .file-icon {
-            font-size: 24px;
-        }
-        
-        .file-details h4 {
-            color: #374151;
-            font-size: 14px;
-            margin: 0;
-        }
-        
-        .file-details p {
-            color: #6b7280;
-            font-size: 12px;
-            margin: 0;
-        }
-        
-        .file-content {
-            background: white;
-            border: 1px solid #e8e5e0;
-            border-radius: 4px;
-            padding: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            white-space: pre-wrap;
-        }
-        
-        .extract-btn {
-            background: #059669;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        .extract-btn:hover {
-            background: #047857;
-        }
-        
         @media print {
             body {
                 background: white;
@@ -443,7 +341,7 @@
                 border: none;
             }
             
-            .app-header, .toolbar, .file-upload-area, .file-preview {
+            .app-header, .toolbar, .upload-instructions {
                 display: none;
             }
             
@@ -486,40 +384,24 @@
     </style>
 </head>
 <body>
-    <div class="save-indicator" id="saveIndicator">
-        ✓ Saved
-    </div>
-    
     <div class="app-container">
         <div class="app-header">
             <h1>🌍 Travel Itinerary Creator</h1>
-            <p>Upload travel documents and create beautiful itineraries</p>
+            <p>Create beautiful, professional travel itineraries</p>
         </div>
         
         <div class="toolbar">
             <button class="btn" onclick="clearAll()">🆕 New Itinerary</button>
             <button class="btn btn-secondary" onclick="loadSample()">📋 Load Hawaii Sample</button>
             <button class="btn btn-outline" onclick="window.print()">🖨️ Print/PDF</button>
-            <button class="btn btn-outline" onclick="copyToClipboard()">📋 Copy HTML</button>
         </div>
         
         <div class="content">
-            <!-- File Upload Area -->
-            <div class="file-upload-area" onclick="document.getElementById('fileInput').click()" 
-                 ondrop="handleDrop(event)" 
-                 ondragover="handleDragOver(event)"
-                 ondragleave="handleDragLeave(event)">
-                <div class="upload-icon">📁</div>
-                <div class="upload-text">File Upload (Save as HTML to enable)</div>
-                <div class="upload-subtext">⚠️ File upload works when saved as .html file on your computer<br>
-                For now: Copy/paste travel details in Claude chat for formatting</div>
-                <input type="file" id="fileInput" class="file-input" 
-                       accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.jpg,.jpeg,.png" 
-                       onchange="handleFileSelect(event)">
+            <div class="upload-instructions">
+                <h3>📁 Need to Upload Travel Documents?</h3>
+                <p><strong>For file upload:</strong> Download this page (Ctrl+S), save as .html file, then open locally.<br>
+                <strong>For now:</strong> Copy/paste your travel details below, or use the Hawaii sample to see the format!</p>
             </div>
-            
-            <!-- File Preview Area -->
-            <div id="filePreview" style="display: none;"></div>
             
             <div class="itinerary-template">
                 <div class="header">
@@ -754,210 +636,20 @@
     </div>
     
     <script>
-        // File handling variables
-        let uploadedFile = null;
-        let formData = {};
-        let saveTimeout;
-        
-        // File upload handlers
-        function handleDragOver(e) {
-            e.preventDefault();
-            document.querySelector('.file-upload-area').classList.add('dragover');
-        }
-        
-        function handleDragLeave(e) {
-            e.preventDefault();
-            document.querySelector('.file-upload-area').classList.remove('dragover');
-        }
-        
-        function handleDrop(e) {
-            e.preventDefault();
-            document.querySelector('.file-upload-area').classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                processFile(files[0]);
-            }
-        }
-        
-        function handleFileSelect(e) {
-            const files = e.target.files;
-            if (files.length > 0) {
-                processFile(files[0]);
-            }
-        }
-        
-        function processFile(file) {
-            uploadedFile = file;
-            displayFilePreview(file);
-            
-            // Read file content based on type
-            const reader = new FileReader();
-            
-            if (file.type.includes('text') || file.name.endsWith('.csv')) {
-                reader.onload = function(e) {
-                    displayFileContent(e.target.result, 'text');
-                };
-                reader.readAsText(file);
-            } else if (file.type.includes('image')) {
-                reader.onload = function(e) {
-                    displayFileContent(e.target.result, 'image');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                displayFileContent('Binary file - content extraction available for supported formats', 'binary');
-            }
-        }
-        
-        function displayFilePreview(file) {
-            const preview = document.getElementById('filePreview');
-            const fileSize = (file.size / 1024).toFixed(1) + ' KB';
-            
-            preview.innerHTML = `
-                <div class="file-preview">
-                    <div class="file-info">
-                        <div class="file-icon">📄</div>
-                        <div class="file-details">
-                            <h4>${file.name}</h4>
-                            <p>${file.type || 'Unknown type'} • ${fileSize}</p>
-                        </div>
-                    </div>
-                    <div class="file-content" id="fileContent">
-                        Loading file content...
-                    </div>
-                    <button class="extract-btn" onclick="extractToForm()">📝 Extract to Itinerary</button>
-                </div>
-            `;
-            preview.style.display = 'block';
-        }
-        
-        function displayFileContent(content, type) {
-            const contentDiv = document.getElementById('fileContent');
-            
-            if (type === 'text') {
-                contentDiv.textContent = content.substring(0, 2000) + (content.length > 2000 ? '...' : '');
-            } else if (type === 'image') {
-                contentDiv.innerHTML = `<img src="${content}" style="max-width: 100%; max-height: 150px; border-radius: 4px;">`;
-            } else {
-                contentDiv.textContent = content;
-            }
-        }
-        
-        function extractToForm() {
-            const content = document.getElementById('fileContent').textContent;
-            
-            // Simple text extraction - you can enhance this based on your needs
-            if (content.toLowerCase().includes('hawaii') || content.toLowerCase().includes('honolulu')) {
-                loadSample();
-                showSaveIndicator();
-                alert('Hawaii itinerary data extracted and loaded!');
-            } else {
-                // Basic extraction logic for common patterns
-                const lines = content.split('\n');
-                
-                lines.forEach(line => {
-                    const lower = line.toLowerCase();
-                    
-                    // Extract traveler name
-                    if (lower.includes('passenger') || lower.includes('traveler') || lower.includes('guest')) {
-                        const match = line.match(/:\s*(.+)/);
-                        if (match && !document.getElementById('traveler').value) {
-                            document.getElementById('traveler').value = match[1].trim();
-                        }
-                    }
-                    
-                    // Extract destination
-                    if (lower.includes('destination') || lower.includes('to:')) {
-                        const match = line.match(/:\s*(.+)/);
-                        if (match && !document.getElementById('destination').value) {
-                            document.getElementById('destination').value = match[1].trim();
-                        }
-                    }
-                    
-                    // Extract hotel name
-                    if (lower.includes('hotel') || lower.includes('resort')) {
-                        if (!document.getElementById('hotelName').value) {
-                            document.getElementById('hotelName').value = line.trim();
-                        }
-                    }
-                    
-                    // Extract phone numbers
-                    const phoneMatch = line.match(/\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})/);
-                    if (phoneMatch && !document.getElementById('hotelPhone').value) {
-                        document.getElementById('hotelPhone').value = phoneMatch[0];
-                    }
-                });
-                
-                showSaveIndicator();
-                alert('Basic information extracted! Please review and complete the details.');
-            }
-        }
-        
-        // Auto-save functionality
-        function showSaveIndicator() {
-            const indicator = document.getElementById('saveIndicator');
-            indicator.classList.add('show');
-            setTimeout(() => {
-                indicator.classList.remove('show');
-            }, 2000);
-        }
-        
-        function autoSave() {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                saveData();
-                showSaveIndicator();
-            }, 1000);
-        }
-        
-        function saveData() {
-            const inputs = document.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                if (input.id) {
-                    if (input.type === 'checkbox') {
-                        formData[input.id] = input.checked;
-                    } else {
-                        formData[input.id] = input.value;
-                    }
-                }
-            });
-        }
-        
-        function loadData() {
-            Object.keys(formData).forEach(key => {
-                const element = document.getElementById(key);
-                if (element) {
-                    if (element.type === 'checkbox') {
-                        element.checked = formData[key];
-                    } else {
-                        element.value = formData[key];
-                    }
-                }
-            });
-        }
-        
         function clearAll() {
             if (confirm('Are you sure you want to clear all data and start a new itinerary?')) {
-                const inputs = document.querySelectorAll('input, textarea');
+                const inputs = document.querySelectorAll('input:not([readonly]), textarea');
                 inputs.forEach(input => {
                     if (input.type === 'checkbox') {
                         input.checked = false;
-                    } else if (!input.readOnly) {
+                    } else {
                         input.value = '';
                     }
                 });
-                formData = {};
-                
-                // Clear file preview
-                document.getElementById('filePreview').style.display = 'none';
-                document.getElementById('fileInput').value = '';
-                uploadedFile = null;
-                
-                showSaveIndicator();
             }
         }
         
         function loadSample() {
-            // Load the Hawaii sample data
             document.getElementById('traveler').value = 'Party of 8';
             document.getElementById('destination').value = 'Honolulu, Hawaii';
             document.getElementById('dates').value = 'December 22-28, 2025';
@@ -996,26 +688,7 @@
             document.getElementById('totalNotes').value = 'Pleasant Holidays Package';
             
             document.getElementById('notes').value = 'Resort fee $55+tax per room/night. Private van transfers included. Maui Divers jewelry tour on Dec 23.';
-            
-            saveData();
-            showSaveIndicator();
         }
-        
-        function copyToClipboard() {
-            // Copy the entire HTML for easy saving
-            const htmlContent = document.documentElement.outerHTML;
-            navigator.clipboard.writeText(htmlContent).then(() => {
-                alert('HTML copied to clipboard! You can paste this into a text file and save as .html');
-            }).catch(() => {
-                alert('Could not copy to clipboard. Try right-clicking and "Save as..." instead.');
-            });
-        }
-        
-        // Add event listeners for auto-save
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', autoSave);
-                input.addEventListener('change', autoSave);
-            });
-        });
+    </script>
+</body>
+</html>
