@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Itinerary Creator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f8f8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e8e5e0;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .app-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .app-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .toolbar {
+            background: #f8f8f8;
+            padding: 20px;
+            border-bottom: 1px solid #e8e5e0;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .btn {
+            background: #374151;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #1f2937;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #059669;
+        }
+        
+        .btn-secondary:hover {
+            background: #047857;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #374151;
+            border: 2px solid #374151;
+        }
+        
+        .btn-outline:hover {
+            background: #374151;
+            color: white;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f8f8f8;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .file-upload-area:hover {
+            border-color: #374151;
+            background: #f0f0f0;
+        }
+        
+        .file-upload-area.dragover {
+            border-color: #059669;
+            background: #ecfdf5;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #9ca3af;
+            margin-bottom: 16px;
+        }
+        
+        .upload-text {
+            color: #4b5563;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .upload-subtext {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .itinerary-template {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #2d3748;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e8e5e0;
+            padding-bottom: 15px;
+        }
+        
+        .header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .trip-overview {
+            background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .overview-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .overview-label {
+            font-weight: 500;
+            min-width: 100px;
+            opacity: 0.9;
+        }
+        
+        .overview-value {
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 6px;
+            padding: 10px;
+            flex: 1;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+        }
+        
+        .overview-value::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .flight-section {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #e8e5e0;
+        }
+        
+        .flight-header {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        .flight-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .flight-details {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 80px 80px;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .hotel-card {
+            border: 1px solid #e8e5e0;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fefefe;
+        }
+        
+        .hotel-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .transport-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 80px 80px 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .checklist {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+        }
+        
+        .contacts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .budget-row {
+            display: grid;
+            grid-template-columns: 2fr 100px 100px 2fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .budget-total {
+            font-weight: 600;
+            background: #f0fdf4;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        input[type="text"], input[type="number"], textarea {
+            border: 1px solid #d1d5db;
+            background: white;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            padding: 8px;
+            width: 100%;
+            border-radius: 4px;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: #374151;
+            box-shadow: 0 0 0 3px rgba(55, 65, 81, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .grid-header {
+            font-weight: 500;
+            background: #f8f8f8;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #6b7280;
+            text-align: center;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .footer {
+            text-align: center;
+            font-style: italic;
+            color: #6b7280;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e8e5e0;
+            font-size: 14px;
+        }
+        
+        .save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #059669;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .save-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .file-preview {
+            background: #f8f8f8;
+            border: 1px solid #e8e5e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .file-icon {
+            font-size: 24px;
+        }
+        
+        .file-details h4 {
+            color: #374151;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .file-details p {
+            color: #6b7280;
+            font-size: 12px;
+            margin: 0;
+        }
+        
+        .file-content {
+            background: white;
+            border: 1px solid #e8e5e0;
+            border-radius: 4px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+        }
+        
+        .extract-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .extract-btn:hover {
+            background: #047857;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .app-container {
+                box-shadow: none;
+                border-radius: 0;
+                border: none;
+            }
+            
+            .app-header, .toolbar, .file-upload-area, .file-preview {
+                display: none;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .itinerary-template {
+                font-size: 11px;
+            }
+            
+            .two-column {
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .toolbar {
+                justify-content: center;
+            }
+            
+            .btn {
+                font-size: 12px;
+                padding: 10px 16px;
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .flight-details, .flight-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="save-indicator" id="saveIndicator">
+        ✓ Saved
+    </div>
+    
+    <div class="app-container">
+        <div class="app-header">
+            <h1>🌍 Travel Itinerary Creator</h1>
+            <p>Upload travel documents and create beautiful itineraries</p>
+        </div>
+        
+        <div class="toolbar">
+            <button class="btn" onclick="clearAll()">🆕 New Itinerary</button>
+            <button class="btn btn-secondary" onclick="loadSample()">📋 Load Hawaii Sample</button>
+            <button class="btn btn-outline" onclick="window.print()">🖨️ Print/PDF</button>
+            <button class="btn btn-outline" onclick="copyToClipboard()">📋 Copy HTML</button>
+        </div>
+        
+        <div class="content">
+            <!-- File Upload Area -->
+            <div class="file-upload-area" onclick="document.getElementById('fileInput').click()" 
+                 ondrop="handleDrop(event)" 
+                 ondragover="handleDragOver(event)"
+                 ondragleave="handleDragLeave(event)">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">File Upload (Save as HTML to enable)</div>
+                <div class="upload-subtext">⚠️ File upload works when saved as .html file on your computer<br>
+                For now: Copy/paste travel details in Claude chat for formatting</div>
+                <input type="file" id="fileInput" class="file-input" 
+                       accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.jpg,.jpeg,.png" 
+                       onchange="handleFileSelect(event)">
+            </div>
+            
+            <!-- File Preview Area -->
+            <div id="filePreview" style="display: none;"></div>
+            
+            <div class="itinerary-template">
+                <div class="header">
+                    <h2>TRAVEL ITINERARY</h2>
+                </div>
+                
+                <div class="trip-overview">
+                    <div class="overview-grid">
+                        <div class="overview-item">
+                            <span class="overview-label">Traveler:</span>
+                            <input type="text" class="overview-value" placeholder="Enter traveler name" id="traveler">
+                        </div>
+                        <div class="overview-item">
+                            <span class="overview-label">Destination:</span>
+                            <input type="text" class="overview-value" placeholder="Enter destination" id="destination">
+                        </div>
+                        <div class="overview-item">
+                            <span class="overview-label">Travel Dates:</span>
+                            <input type="text" class="overview-value" placeholder="MM/DD - MM/DD" id="dates">
+                        </div>
+                        <div class="overview-item">
+                            <span class="overview-label">Duration:</span>
+                            <input type="text" class="overview-value" placeholder="X days, X nights" id="duration">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">✈️ FLIGHT DETAILS</h3>
+                    
+                    <div class="flight-section">
+                        <div class="flight-header">OUTBOUND</div>
+                        <div class="flight-row">
+                            <input type="text" placeholder="Date • Day of Week" id="outDate">
+                            <input type="text" placeholder="Flight Number" id="outFlight">
+                        </div>
+                        <div class="flight-details">
+                            <input type="text" placeholder="From → To" id="outRoute">
+                            <input type="text" placeholder="Depart - Arrive" id="outTime">
+                            <input type="text" placeholder="Seat" id="outSeat">
+                            <input type="text" placeholder="Terminal" id="outTerminal">
+                        </div>
+                        <div class="flight-row">
+                            <input type="text" placeholder="Airline" id="outAirline">
+                            <input type="text" placeholder="Confirmation Number" id="outConfirm">
+                        </div>
+                    </div>
+                    
+                    <div class="flight-section">
+                        <div class="flight-header">RETURN</div>
+                        <div class="flight-row">
+                            <input type="text" placeholder="Date • Day of Week" id="retDate">
+                            <input type="text" placeholder="Flight Number" id="retFlight">
+                        </div>
+                        <div class="flight-details">
+                            <input type="text" placeholder="From → To" id="retRoute">
+                            <input type="text" placeholder="Depart - Arrive" id="retTime">
+                            <input type="text" placeholder="Seat" id="retSeat">
+                            <input type="text" placeholder="Terminal" id="retTerminal">
+                        </div>
+                        <div class="flight-row">
+                            <input type="text" placeholder="Airline" id="retAirline">
+                            <input type="text" placeholder="Confirmation Number" id="retConfirm">
+                        </div>
+                    </div>
+                    
+                    <input type="text" placeholder="Layover/Connection details (if applicable)" id="connections" style="width: 100%; margin-top: 10px;">
+                </div>
+                
+                <div class="two-column">
+                    <div>
+                        <div class="section">
+                            <h3 class="section-title">🏨 ACCOMMODATION</h3>
+                            <div class="hotel-card">
+                                <input type="text" placeholder="Hotel Name" style="font-weight: 500; font-size: 16px; margin-bottom: 10px;" id="hotelName">
+                                <input type="text" placeholder="Hotel Address" style="margin-bottom: 6px;" id="hotelAddress">
+                                <input type="text" placeholder="Phone Number" style="margin-bottom: 10px;" id="hotelPhone">
+                                
+                                <div class="hotel-row">
+                                    <div class="grid-header">Check-in</div>
+                                    <div class="grid-header">Check-out</div>
+                                    <div class="grid-header">Room Type</div>
+                                    <div class="grid-header">Confirmation</div>
+                                    <input type="text" placeholder="Date/Time" id="checkin">
+                                    <input type="text" placeholder="Date/Time" id="checkout">
+                                    <input type="text" placeholder="Room" id="roomType">
+                                    <input type="text" placeholder="Conf #" id="hotelConfirm">
+                                </div>
+                                
+                                <textarea placeholder="Special Requests" id="requests"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h3 class="section-title">🚗 TRANSPORTATION</h3>
+                            <div class="transport-row">
+                                <div class="grid-header">Route</div>
+                                <div class="grid-header">Method</div>
+                                <div class="grid-header">Time</div>
+                                <div class="grid-header">Cost</div>
+                                <div class="grid-header">Confirmation</div>
+                            </div>
+                            <div class="transport-row">
+                                <input type="text" placeholder="Airport → Hotel" id="transport1Route">
+                                <input type="text" placeholder="Taxi/Uber/Rental" id="transport1Method">
+                                <input type="text" placeholder="30 min" id="transport1Time">
+                                <input type="text" placeholder="$25" id="transport1Cost">
+                                <input type="text" placeholder="Conf #" id="transport1Confirm">
+                            </div>
+                            <div class="transport-row">
+                                <input type="text" placeholder="Hotel → Airport" id="transport2Route">
+                                <input type="text" placeholder="Taxi/Uber/Rental" id="transport2Method">
+                                <input type="text" placeholder="30 min" id="transport2Time">
+                                <input type="text" placeholder="$25" id="transport2Cost">
+                                <input type="text" placeholder="Conf #" id="transport2Confirm">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="section">
+                            <h3 class="section-title">📋 TRAVEL CHECKLIST</h3>
+                            <div class="checklist">
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check1"> <label for="check1">Passport/ID</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check2"> <label for="check2">Flight confirmations</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check3"> <label for="check3">Hotel confirmation</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check4"> <label for="check4">Travel insurance</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check5"> <label for="check5">Online check-in</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check6"> <label for="check6">Weather checked</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check7"> <label for="check7">Bank notified</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check8"> <label for="check8">Phone plan updated</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h3 class="section-title">📞 EMERGENCY CONTACTS</h3>
+                            <div class="contacts-row">
+                                <div class="grid-header">Service</div>
+                                <div class="grid-header">Phone</div>
+                                <div class="grid-header">Notes</div>
+                            </div>
+                            <div class="contacts-row">
+                                <input type="text" value="Airline" style="background: #f8f8f8;" readonly>
+                                <input type="text" placeholder="Customer service #" id="airlinePhone">
+                                <input type="text" placeholder="Flight changes, etc." id="airlineNotes">
+                            </div>
+                            <div class="contacts-row">
+                                <input type="text" value="Hotel" style="background: #f8f8f8;" readonly>
+                                <input type="text" placeholder="Front desk #" id="hotelContactPhone">
+                                <input type="text" placeholder="Room service" id="hotelNotes">
+                            </div>
+                            <div class="contacts-row">
+                                <input type="text" value="Emergency" style="background: #f8f8f8;" readonly>
+                                <input type="text" placeholder="Local emergency #" id="emergencyPhone">
+                                <input type="text" placeholder="Police, fire, medical" id="emergencyNotes">
+                            </div>
+                            <div class="contacts-row">
+                                <input type="text" value="Bank" style="background: #f8f8f8;" readonly>
+                                <input type="text" placeholder="Card hotline" id="bankPhone">
+                                <input type="text" placeholder="Lost/stolen cards" id="bankNotes">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">💰 BUDGET TRACKER</h3>
+                    <div class="budget-row">
+                        <div class="grid-header">Category</div>
+                        <div class="grid-header">Budgeted</div>
+                        <div class="grid-header">Actual</div>
+                        <div class="grid-header">Notes</div>
+                    </div>
+                    <div class="budget-row">
+                        <input type="text" value="Flights" style="background: #f8f8f8;" readonly>
+                        <input type="number" placeholder="0" id="flightsBudget">
+                        <input type="number" placeholder="0" id="flightsActual">
+                        <input type="text" placeholder="Airlines, seat upgrades" id="flightsNotes">
+                    </div>
+                    <div class="budget-row">
+                        <input type="text" value="Hotel" style="background: #f8f8f8;" readonly>
+                        <input type="number" placeholder="0" id="hotelBudget">
+                        <input type="number" placeholder="0" id="hotelActual">
+                        <input type="text" placeholder="Room, taxes, fees" id="hotelBudgetNotes">
+                    </div>
+                    <div class="budget-row">
+                        <input type="text" value="Transportation" style="background: #f8f8f8;" readonly>
+                        <input type="number" placeholder="0" id="transportBudget">
+                        <input type="number" placeholder="0" id="transportActual">
+                        <input type="text" placeholder="Transfers, local transport" id="transportNotes">
+                    </div>
+                    <div class="budget-row">
+                        <input type="text" value="Meals" style="background: #f8f8f8;" readonly>
+                        <input type="number" placeholder="0" id="mealsBudget">
+                        <input type="number" placeholder="0" id="mealsActual">
+                        <input type="text" placeholder="Restaurants, room service" id="mealsNotes">
+                    </div>
+                    <div class="budget-row budget-total">
+                        <strong>TOTAL</strong>
+                        <input type="number" placeholder="0" style="font-weight: 600;" id="totalBudget">
+                        <input type="number" placeholder="0" style="font-weight: 600;" id="totalActual">
+                        <input type="text" placeholder="Total trip cost" style="font-weight: 600;" id="totalNotes">
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="section-title">📝 NOTES & REMINDERS</h3>
+                    <textarea placeholder="Important information, local tips, things to remember..." id="notes"></textarea>
+                </div>
+                
+                <div class="footer">
+                    Created with care • Bon voyage!
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // File handling variables
+        let uploadedFile = null;
+        let formData = {};
+        let saveTimeout;
+        
+        // File upload handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.querySelector('.file-upload-area').classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.preventDefault();
+            document.querySelector('.file-upload-area').classList.remove('dragover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            document.querySelector('.file-upload-area').classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+        
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+        
+        function processFile(file) {
+            uploadedFile = file;
+            displayFilePreview(file);
+            
+            // Read file content based on type
+            const reader = new FileReader();
+            
+            if (file.type.includes('text') || file.name.endsWith('.csv')) {
+                reader.onload = function(e) {
+                    displayFileContent(e.target.result, 'text');
+                };
+                reader.readAsText(file);
+            } else if (file.type.includes('image')) {
+                reader.onload = function(e) {
+                    displayFileContent(e.target.result, 'image');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                displayFileContent('Binary file - content extraction available for supported formats', 'binary');
+            }
+        }
+        
+        function displayFilePreview(file) {
+            const preview = document.getElementById('filePreview');
+            const fileSize = (file.size / 1024).toFixed(1) + ' KB';
+            
+            preview.innerHTML = `
+                <div class="file-preview">
+                    <div class="file-info">
+                        <div class="file-icon">📄</div>
+                        <div class="file-details">
+                            <h4>${file.name}</h4>
+                            <p>${file.type || 'Unknown type'} • ${fileSize}</p>
+                        </div>
+                    </div>
+                    <div class="file-content" id="fileContent">
+                        Loading file content...
+                    </div>
+                    <button class="extract-btn" onclick="extractToForm()">📝 Extract to Itinerary</button>
+                </div>
+            `;
+            preview.style.display = 'block';
+        }
+        
+        function displayFileContent(content, type) {
+            const contentDiv = document.getElementById('fileContent');
+            
+            if (type === 'text') {
+                contentDiv.textContent = content.substring(0, 2000) + (content.length > 2000 ? '...' : '');
+            } else if (type === 'image') {
+                contentDiv.innerHTML = `<img src="${content}" style="max-width: 100%; max-height: 150px; border-radius: 4px;">`;
+            } else {
+                contentDiv.textContent = content;
+            }
+        }
+        
+        function extractToForm() {
+            const content = document.getElementById('fileContent').textContent;
+            
+            // Simple text extraction - you can enhance this based on your needs
+            if (content.toLowerCase().includes('hawaii') || content.toLowerCase().includes('honolulu')) {
+                loadSample();
+                showSaveIndicator();
+                alert('Hawaii itinerary data extracted and loaded!');
+            } else {
+                // Basic extraction logic for common patterns
+                const lines = content.split('\n');
+                
+                lines.forEach(line => {
+                    const lower = line.toLowerCase();
+                    
+                    // Extract traveler name
+                    if (lower.includes('passenger') || lower.includes('traveler') || lower.includes('guest')) {
+                        const match = line.match(/:\s*(.+)/);
+                        if (match && !document.getElementById('traveler').value) {
+                            document.getElementById('traveler').value = match[1].trim();
+                        }
+                    }
+                    
+                    // Extract destination
+                    if (lower.includes('destination') || lower.includes('to:')) {
+                        const match = line.match(/:\s*(.+)/);
+                        if (match && !document.getElementById('destination').value) {
+                            document.getElementById('destination').value = match[1].trim();
+                        }
+                    }
+                    
+                    // Extract hotel name
+                    if (lower.includes('hotel') || lower.includes('resort')) {
+                        if (!document.getElementById('hotelName').value) {
+                            document.getElementById('hotelName').value = line.trim();
+                        }
+                    }
+                    
+                    // Extract phone numbers
+                    const phoneMatch = line.match(/\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})/);
+                    if (phoneMatch && !document.getElementById('hotelPhone').value) {
+                        document.getElementById('hotelPhone').value = phoneMatch[0];
+                    }
+                });
+                
+                showSaveIndicator();
+                alert('Basic information extracted! Please review and complete the details.');
+            }
+        }
+        
+        // Auto-save functionality
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+        
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveData();
+                showSaveIndicator();
+            }, 1000);
+        }
+        
+        function saveData() {
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                if (input.id) {
+                    if (input.type === 'checkbox') {
+                        formData[input.id] = input.checked;
+                    } else {
+                        formData[input.id] = input.value;
+                    }
+                }
+            });
+        }
+        
+        function loadData() {
+            Object.keys(formData).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = formData[key];
+                    } else {
+                        element.value = formData[key];
+                    }
+                }
+            });
+        }
+        
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all data and start a new itinerary?')) {
+                const inputs = document.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    if (input.type === 'checkbox') {
+                        input.checked = false;
+                    } else if (!input.readOnly) {
+                        input.value = '';
+                    }
+                });
+                formData = {};
+                
+                // Clear file preview
+                document.getElementById('filePreview').style.display = 'none';
+                document.getElementById('fileInput').value = '';
+                uploadedFile = null;
+                
+                showSaveIndicator();
+            }
+        }
+        
+        function loadSample() {
+            // Load the Hawaii sample data
+            document.getElementById('traveler').value = 'Party of 8';
+            document.getElementById('destination').value = 'Honolulu, Hawaii';
+            document.getElementById('dates').value = 'December 22-28, 2025';
+            document.getElementById('duration').value = '6 Days, 6 Nights';
+            
+            document.getElementById('outDate').value = 'Dec 22, 2025 • Monday';
+            document.getElementById('outFlight').value = 'Multiple Flights';
+            document.getElementById('outRoute').value = 'Various → Honolulu';
+            document.getElementById('outTime').value = 'Various Times';
+            
+            document.getElementById('retDate').value = 'Dec 28, 2025 • Sunday';
+            document.getElementById('retFlight').value = 'Multiple Flights';
+            document.getElementById('retRoute').value = 'Honolulu → Various';
+            document.getElementById('retTime').value = 'Various Times';
+            
+            document.getElementById('hotelName').value = 'Hilton Hawaiian Village Waikiki Beach Resort';
+            document.getElementById('hotelAddress').value = '2005 Kalia Road, Honolulu, HI 96815';
+            document.getElementById('hotelPhone').value = '(808) 949-4321';
+            document.getElementById('checkin').value = 'Dec 22, 2025';
+            document.getElementById('checkout').value = 'Dec 28, 2025';
+            document.getElementById('roomType').value = '3 Kalia Tower King Rooms';
+            document.getElementById('hotelConfirm').value = '#30216818';
+            
+            document.getElementById('transport1Route').value = 'Airport → Hotel';
+            document.getElementById('transport1Method').value = 'Private Van';
+            document.getElementById('transport1Time').value = '45 min';
+            document.getElementById('transport1Cost').value = 'Included';
+            
+            document.getElementById('transport2Route').value = 'Hotel → Airport';
+            document.getElementById('transport2Method').value = 'Private Van';
+            document.getElementById('transport2Time').value = '45 min';
+            document.getElementById('transport2Cost').value = 'Included';
+            
+            document.getElementById('totalBudget').value = '18989';
+            document.getElementById('totalActual').value = '18989';
+            document.getElementById('totalNotes').value = 'Pleasant Holidays Package';
+            
+            document.getElementById('notes').value = 'Resort fee $55+tax per room/night. Private van transfers included. Maui Divers jewelry tour on Dec 23.';
+            
+            saveData();
+            showSaveIndicator();
+        }
+        
+        function copyToClipboard() {
+            // Copy the entire HTML for easy saving
+            const htmlContent = document.documentElement.outerHTML;
+            navigator.clipboard.writeText(htmlContent).then(() => {
+                alert('HTML copied to clipboard! You can paste this into a text file and save as .html');
+            }).catch(() => {
+                alert('Could not copy to clipboard. Try right-clicking and "Save as..." instead.');
+            });
+        }
+        
+        // Add event listeners for auto-save
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', autoSave);
+                input.addEventListener('change', autoSave);
+            });
+        });
